@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class TeleportCircle : MonoBehaviour
 {
-    [SerializeField] private float lerpSpeed;
+    [SerializeField] private float lerpSpeedOpen;
+    [SerializeField] private float lerpSpeedClose;
     private float radius;
     private bool isEnabled;
 
@@ -34,10 +35,10 @@ public class TeleportCircle : MonoBehaviour
     {
         // Lerp to radius
         if (Mathf.Abs(radius - transform.localScale.x) > 0.02f && isEnabled)
-            transform.localScale = new Vector2( Mathf.Lerp(transform.localScale.x, radius, lerpSpeed), Mathf.Lerp(transform.localScale.y, radius, lerpSpeed));
+            transform.localScale = new Vector2( Mathf.Lerp(transform.localScale.x, radius, lerpSpeedOpen), Mathf.Lerp(transform.localScale.y, radius, lerpSpeedOpen));
 
         // Lerp to zero
-        if (Mathf.Abs(radius - transform.localScale.x) > 0.02f && !isEnabled)
-            transform.localScale = new Vector2(Mathf.Lerp(transform.localScale.x, 0, lerpSpeed), Mathf.Lerp(transform.localScale.y, 0, lerpSpeed));
+        if (Mathf.Abs(0 - transform.localScale.x) > 0.02f && !isEnabled)
+            transform.localScale = new Vector2(Mathf.Lerp(transform.localScale.x, 0, lerpSpeedClose), Mathf.Lerp(transform.localScale.y, 0, lerpSpeedClose));
     }
 }
