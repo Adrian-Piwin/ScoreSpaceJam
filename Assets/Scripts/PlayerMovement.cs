@@ -6,30 +6,40 @@ public class PlayerMovement : MonoBehaviour
 {
     [Header("Player Movement Settings")]
     [SerializeField] private float speed;
-    [SerializeField] private float teleportRadius;
-    [SerializeField] private float teleportTime;
     [SerializeField] private float fallMultiplier;
 
+    [Header("Player Teleport Settings")]
+    [SerializeField] private float teleportRadius;
+    [SerializeField] private float teleportTimeLimit;
+
+    [Header("References")]
+    [SerializeField] private GameObject teleportCircle;
+
+    private CircleCollider2D teleportCollider;
+    private TeleportCircle teleportCircleScript;
     private Rigidbody2D body;
 
     // Start is called before the first frame update
     void Start()
     {
         body = GetComponent<Rigidbody2D>();
+        teleportCollider = teleportCircle.GetComponent<CircleCollider2D>();
+        teleportCircleScript = teleportCircle.GetComponent<TeleportCircle>();
+        teleportCircleScript.SetRadius(teleportRadius);
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     void FixedUpdate()
     {
-        movement();
+        Movement();
     }
 
-    private void movement()
+    private void Movement()
     {
         body.velocity = new Vector2(speed, body.velocity.y);
 
@@ -39,4 +49,6 @@ public class PlayerMovement : MonoBehaviour
             body.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
         }
     }
+
+
 }
