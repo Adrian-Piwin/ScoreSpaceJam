@@ -57,6 +57,7 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\PlayerMovement.cs" />
     <Compile Include="Assets\Scripts\TeleportCircle.cs" />
+    <Compile Include="Assets\Scripts\PlayerDrag.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

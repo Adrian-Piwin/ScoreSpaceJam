@@ -110,24 +110,24 @@ public class PlayerMovement : MonoBehaviour
     {
         if (!isTeleporting || !teleportInputUp) return;
 
-        teleportDragObj.SetActive(false);
         teleportCircleScript.Toggle(false);
         isCircleFollowing = false;
         isTeleporting = false;
-        Teleport();
+
+        // Check if player is overlapping with wall 
+        if (!teleportDragObj.GetComponent<PlayerDrag>().isOverlapping)
+            Teleport();
+
+        teleportDragObj.SetActive(false);
     }
 
     private void Teleport()
     {
-        // Check if player is teleporting within radius
         RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero, teleportCircleLayer);
 
-        //TODO: Check if overlapping with wall
-
+        //Check if player is teleporting within radius
         if (hit.collider != null)
         {
-
-
             transform.position = teleportDragObj.transform.position;
         }
     }

@@ -35,10 +35,12 @@ public class TeleportCircle : MonoBehaviour
     {
         // Lerp to radius
         if (Mathf.Abs(radius - transform.localScale.x) > 0.02f && isEnabled)
-            transform.localScale = new Vector2( Mathf.Lerp(transform.localScale.x, radius, lerpSpeedOpen), Mathf.Lerp(transform.localScale.y, radius, lerpSpeedOpen));
+            transform.localScale = new Vector2(Mathf.Lerp(transform.localScale.x, radius, lerpSpeedOpen),
+                Mathf.Lerp(transform.localScale.y, radius, lerpSpeedOpen));
 
         // Lerp to zero
         if (Mathf.Abs(0 - transform.localScale.x) > 0.02f && !isEnabled)
-            transform.localScale = new Vector2(Mathf.Lerp(transform.localScale.x, 0, lerpSpeedClose), Mathf.Lerp(transform.localScale.y, 0, lerpSpeedClose));
+            transform.localScale = new Vector2(Mathf.Lerp(transform.localScale.x, 0, lerpSpeedClose),
+                Mathf.Lerp(transform.localScale.y, 0, lerpSpeedClose));
     }
 }
