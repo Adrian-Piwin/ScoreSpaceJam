@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.PostProcessing;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -9,8 +11,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float fallMultiplier;
 
     [Header("Player Teleport Settings")]
+    [SerializeField] public float teleportingSlowMotion;
     [SerializeField] private float teleportRadius;
-    [SerializeField] private float teleportTimeLimit;
+    [SerializeField] public float teleportTimeLimit;
 
     [Header("References")]
     [SerializeField] private GameObject teleportDragObj;
@@ -18,12 +21,16 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private LayerMask playerLayer;
     [SerializeField] private LayerMask teleportCircleLayer;
 
+    // Private variables
     private TeleportCircle teleportCircleScript;
     private Rigidbody2D body;
     private bool teleportInputDown;
     private bool teleportInputUp;
-    private bool isTeleporting;
     private bool isCircleFollowing;
+    private bool forceTeleport;
+
+    // Public variables
+    [NonSerialized] public bool isTeleporting;
 
     // Start is called before the first frame update
     void Start()
@@ -90,7 +97,20 @@ public class PlayerMovement : MonoBehaviour
             isTeleporting = true;
             isCircleFollowing = true;
             teleportCircleScript.Toggle(true);
+            StartCoroutine(ForceTeleport(teleportTimeLimit * teleportingSlowMotion));
+
+            // Slow motion
+            Time.timeScale = teleportingSlowMotion;
+            Time.fixedDeltaTime = 0.02f * Time.timeScale;
         }
+    }
+
+    IEnumerator ForceTeleport(float timer)
+    {
+        // Force teleport after certain time
+        yield return new WaitForSeconds(timer);
+        if (isTeleporting)
+            forceTeleport = true;
     }
 
     private void TeleportDrag()
@@ -104,14 +124,19 @@ public class PlayerMovement : MonoBehaviour
 
     private void TeleportEnd()
     {
-        if (!isTeleporting || !teleportInputUp) return;
+        if ((!isTeleporting || !teleportInputUp) && !forceTeleport) return;
 
         // Check if player is overlapping with wall 
         bool canTeleport = !teleportDragObj.GetComponent<PlayerDrag>().isOverlapping;
         teleportDragObj.SetActive(false);
         teleportCircleScript.Toggle(false);
+        forceTeleport = false;
         isCircleFollowing = false;
         isTeleporting = false;
+
+        // Slow motion
+        Time.timeScale = 1f;
+        Time.fixedDeltaTime = 0.02f * Time.timeScale;
 
         if (canTeleport)
             Teleport();
