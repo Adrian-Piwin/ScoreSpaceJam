@@ -13,6 +13,7 @@ public class PlayerDynamicEffects : MonoBehaviour
     private PlayerMovement playerMovement;
     private ChromaticAberration chromaticAberration;
     private Vignette vignette;
+    private bool startTeleport;
 
     // Start is called before the first frame update
     void Start()
@@ -32,6 +33,14 @@ public class PlayerDynamicEffects : MonoBehaviour
 
     private void TeleportEffects()
     {
+        // DO on start of teleport
+        if (playerMovement.isTeleporting && !startTeleport)
+        {
+            startTeleport = true;
+            StartCoroutine(changeValueOverTime(0.75f, 0.05f, playerMovement.teleportTimeLimit * playerMovement.teleportingSlowMotion));
+        }
+        else if (!playerMovement.isTeleporting)
+            startTeleport = false;
 
         // Lerp to vignette
         if (Mathf.Abs(defaultVignette * 2 - vignette.intensity.value) > 0.02f && playerMovement.isTeleporting)
@@ -41,15 +50,31 @@ public class PlayerDynamicEffects : MonoBehaviour
         if (Mathf.Abs(defaultVignette - vignette.intensity.value) > 0.02f && !playerMovement.isTeleporting)
             vignette.intensity.value = Mathf.Lerp(vignette.intensity.value, defaultVignette, lerpSpeed);
 
-        /*
-        // Lerp to ChromaticAberration
-        if (Mathf.Abs(defaultChromaticAberration * 2 - chromaticAberration.intensity.value) > 0.02f && playerMovement.isTeleporting)
-            chromaticAberration.intensity.value = Mathf.Lerp(chromaticAberration.intensity.value, defaultChromaticAberration * 2, lerpSpeed);
+    }
 
-        // Lerp to 0
-        if (Mathf.Abs(defaultChromaticAberration - chromaticAberration.intensity.value) > 0.02f && !playerMovement.isTeleporting)
-            chromaticAberration.intensity.value = Mathf.Lerp(chromaticAberration.intensity.value, defaultChromaticAberration, lerpSpeed);
-        */
+    IEnumerator changeValueOverTime(float fromVal, float toVal, float duration)
+    {
+        Color color = playerMovement.teleportDragObj.GetComponent<SpriteRenderer>().color;
+
+        float counter = 0f;
+
+        while (counter < duration)
+        {
+            // Check if player is still teleporting
+            if (!playerMovement.isTeleporting) break;
+
+            if (Time.timeScale == 0)
+                counter += Time.unscaledDeltaTime;
+            else
+                counter += Time.deltaTime;
+
+            float val = Mathf.Lerp(fromVal, toVal, counter / duration);
+
+            color.a = val;
+            playerMovement.teleportDragObj.GetComponent<SpriteRenderer>().color = color;
+
+            yield return null;
+        }
     }
 
 }

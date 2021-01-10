@@ -11,15 +11,19 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float fallMultiplier;
 
     [Header("Player Teleport Settings")]
+    [SerializeField] public float teleportingCooldown;
     [SerializeField] public float teleportingSlowMotion;
     [SerializeField] private float teleportRadius;
     [SerializeField] public float teleportTimeLimit;
 
     [Header("References")]
-    [SerializeField] private GameObject teleportDragObj;
+    [SerializeField] public GameObject teleportDragObj;
     [SerializeField] private GameObject teleportCircle;
     [SerializeField] private LayerMask playerLayer;
     [SerializeField] private LayerMask teleportCircleLayer;
+
+    // Public variables
+    public bool canMove = true;
 
     // Private variables
     private TeleportCircle teleportCircleScript;
@@ -28,6 +32,8 @@ public class PlayerMovement : MonoBehaviour
     private bool teleportInputUp;
     private bool isCircleFollowing;
     private bool forceTeleport;
+    private float teleportTimer; 
+    private IEnumerator forceTeleportCoroutine;
 
     // Public variables
     [NonSerialized] public bool isTeleporting;
@@ -39,6 +45,7 @@ public class PlayerMovement : MonoBehaviour
 
         teleportCircleScript = teleportCircle.GetComponent<TeleportCircle>();
         teleportCircleScript.SetRadius(teleportRadius);
+        forceTeleportCoroutine = ForceTeleport(teleportTimeLimit * teleportingSlowMotion);
     }
 
     // Update is called once per frame
@@ -65,6 +72,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void Movement()
     {
+        if (!canMove) return;
+
         // Player consistent movement
         body.velocity = new Vector2(speed, body.velocity.y);
 
@@ -85,7 +94,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void TeleportStart()
     {
-        if (!teleportInputDown) return;
+        if (!teleportInputDown || teleportTimer > Time.time || !canMove) return;
 
         // Check if clicked on player
         RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero,
@@ -97,7 +106,7 @@ public class PlayerMovement : MonoBehaviour
             isTeleporting = true;
             isCircleFollowing = true;
             teleportCircleScript.Toggle(true);
-            StartCoroutine(ForceTeleport(teleportTimeLimit * teleportingSlowMotion));
+            StartCoroutine(forceTeleportCoroutine);
 
             // Slow motion
             Time.timeScale = teleportingSlowMotion;
@@ -109,8 +118,7 @@ public class PlayerMovement : MonoBehaviour
     {
         // Force teleport after certain time
         yield return new WaitForSeconds(timer);
-        if (isTeleporting)
-            forceTeleport = true;
+        forceTeleport = true;
     }
 
     private void TeleportDrag()
@@ -133,6 +141,11 @@ public class PlayerMovement : MonoBehaviour
         forceTeleport = false;
         isCircleFollowing = false;
         isTeleporting = false;
+
+        StopCoroutine(forceTeleportCoroutine);
+
+        // Cooldown
+        teleportTimer = Time.time + teleportingCooldown;
 
         // Slow motion
         Time.timeScale = 1f;

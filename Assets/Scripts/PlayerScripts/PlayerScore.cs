@@ -22,6 +22,6 @@ public class PlayerScore : MonoBehaviour
         if (distanceTravelled < Vector2.Distance(startPos, transform.position))
             distanceTravelled = Mathf.Floor(Vector2.Distance(startPos, transform.position));
 
-        scoreUI.text = distanceTravelled + " M";
+        scoreUI.text = distanceTravelled + "";
     }
 }
