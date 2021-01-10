@@ -20,6 +20,8 @@ public class PlayerDie : MonoBehaviour
 
     private void Died()
     {
+        if (isDead) return;
+
         GameObject particles = Instantiate(deathParticleSystem, transform.position, Quaternion.identity, transform.parent);
         spriteRenderer.enabled = false;
         playerMovement.canMove = false;

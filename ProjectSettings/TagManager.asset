@@ -18,7 +18,7 @@ TagManager:
   - Danger
   - TeleportCircle
   - PlayerDrag
-  - 
+  - Bounds
   - 
   - 
   - 
@@ -40,6 +40,12 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Background
+    uniqueID: 3414214689
+    locked: 0
+  - name: Foreground
+    uniqueID: 3918488711
     locked: 0
   - name: Player
     uniqueID: 233861297

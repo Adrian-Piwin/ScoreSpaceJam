@@ -19,7 +19,6 @@ public class PlayerMovement : MonoBehaviour
     [Header("References")]
     [SerializeField] public GameObject teleportDragObj;
     [SerializeField] private GameObject teleportCircle;
-    [SerializeField] private LayerMask playerLayer;
     [SerializeField] private LayerMask teleportCircleLayer;
 
     // Public variables
@@ -45,7 +44,6 @@ public class PlayerMovement : MonoBehaviour
 
         teleportCircleScript = teleportCircle.GetComponent<TeleportCircle>();
         teleportCircleScript.SetRadius(teleportRadius);
-        forceTeleportCoroutine = ForceTeleport(teleportTimeLimit * teleportingSlowMotion);
     }
 
     // Update is called once per frame
@@ -72,7 +70,11 @@ public class PlayerMovement : MonoBehaviour
 
     private void Movement()
     {
-        if (!canMove) return;
+        if (!canMove)
+        {
+            body.velocity = Vector2.zero;
+            return;
+        }
 
         // Player consistent movement
         body.velocity = new Vector2(speed, body.velocity.y);
@@ -97,15 +99,17 @@ public class PlayerMovement : MonoBehaviour
         if (!teleportInputDown || teleportTimer > Time.time || !canMove) return;
 
         // Check if clicked on player
-        RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero,
-            playerLayer);
+        RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+        if (hit == false) return;
 
-        if (hit.collider != null)
+        if (hit.transform.gameObject.name == "Player")
         {
             teleportDragObj.SetActive(true);
             isTeleporting = true;
             isCircleFollowing = true;
             teleportCircleScript.Toggle(true);
+
+            forceTeleportCoroutine = ForceTeleport(teleportTimeLimit * teleportingSlowMotion);
             StartCoroutine(forceTeleportCoroutine);
 
             // Slow motion
@@ -134,6 +138,8 @@ public class PlayerMovement : MonoBehaviour
     {
         if ((!isTeleporting || !teleportInputUp) && !forceTeleport) return;
 
+        StopCoroutine(forceTeleportCoroutine);
+
         // Check if player is overlapping with wall 
         bool canTeleport = !teleportDragObj.GetComponent<PlayerDrag>().isOverlapping;
         teleportDragObj.SetActive(false);
@@ -141,8 +147,6 @@ public class PlayerMovement : MonoBehaviour
         forceTeleport = false;
         isCircleFollowing = false;
         isTeleporting = false;
-
-        StopCoroutine(forceTeleportCoroutine);
 
         // Cooldown
         teleportTimer = Time.time + teleportingCooldown;
