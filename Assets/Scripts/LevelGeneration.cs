@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -16,6 +17,7 @@ public class LevelGeneration : MonoBehaviour
     [SerializeField] public bool canGenerateWallSpikes = true;
     [SerializeField] public bool canGenerateGroundSpikes = true;
     [SerializeField] public bool canGenerateWalls = true;
+    [SerializeField] public bool canGenerateCoins = true;
 
     [Header("Multi Level")]
     [SerializeField] private float multiLevelRate;
@@ -40,6 +42,10 @@ public class LevelGeneration : MonoBehaviour
     [Header("Platform Spikes")] 
     [SerializeField] public float spikeWallRate;
     [SerializeField] public float spikeGroundRate;
+
+    [Header("Coins")]
+    [SerializeField] public GameObject coinPrefab;
+    [SerializeField] public float coinRate;
 
     [Header("References")] 
     [SerializeField] private Transform player;
@@ -119,17 +125,46 @@ public class LevelGeneration : MonoBehaviour
             newPos = new Vector3Int(pos.x + i, pos.y, 0);
             collisionTilemap.SetTile(newPos, ground);
 
-            generateGroundSpike(newPos);
+            bool didGenerate = false;
+            didGenerate = generateCoin(newPos);
+            if (didGenerate) continue;
+            didGenerate = generateGroundSpike(newPos);
+            if (didGenerate) continue;
             generateWall(newPos);
         }
 
         startPos = newPos;
     }
 
-    private void generateGroundSpike(Vector3Int pos)
+    private bool generateCoin(Vector3Int pos)
     {
         // Spike rate
-        if (UnityEngine.Random.Range(0f, 1f) > spikeGroundRate || !canGenerateGroundSpikes) return;
+        if (UnityEngine.Random.Range(0f, 1f) > coinRate || !canGenerateCoins) return false;
+
+        Vector3Int desiredPos;
+
+        // Check if space above is occupied
+        desiredPos = new Vector3Int(pos.x, pos.y + 1, 0);
+        if (collisionTilemap.GetTile(desiredPos) == null && dangerTilemap.GetTile(desiredPos) == null)
+        {
+            Instantiate(coinPrefab, new Vector3(desiredPos.x + 0.5f, desiredPos.y + 0.5f, 0), Quaternion.identity, gameObject.transform);
+            return true;
+        }
+
+        // Check if space under is occupied
+        desiredPos = new Vector3Int(pos.x, pos.y - 1, 0);
+        if (collisionTilemap.GetTile(desiredPos) == null && dangerTilemap.GetTile(desiredPos) == null)
+        {
+            Instantiate(coinPrefab, new Vector3(desiredPos.x - 0.5f, desiredPos.y - 0.5f, 0), Quaternion.identity, gameObject.transform);
+        }
+
+        return true;
+    }
+
+    private bool generateGroundSpike(Vector3Int pos)
+    {
+        // Spike rate
+        if (UnityEngine.Random.Range(0f, 1f) > spikeGroundRate || !canGenerateGroundSpikes) return false;
 
         Vector3Int desiredPos;
 
@@ -138,7 +173,7 @@ public class LevelGeneration : MonoBehaviour
         if (collisionTilemap.GetTile(desiredPos) == null && dangerTilemap.GetTile(desiredPos) == null)
         {
             dangerTilemap.SetTile(desiredPos, spikeUp);
-            return;
+            return true;
         }
 
         // Check if space under is occupied
@@ -147,6 +182,8 @@ public class LevelGeneration : MonoBehaviour
         {
             dangerTilemap.SetTile(desiredPos, spikeDown);
         }
+
+        return true;
     }
 
     private void generateWallSpike(Vector3Int pos)
@@ -172,9 +209,9 @@ public class LevelGeneration : MonoBehaviour
         }
     }
 
-    private void generateWall(Vector3Int pos)
+    private bool generateWall(Vector3Int pos)
     {
-        if (UnityEngine.Random.Range(0f, 1f) > wallRate || !canGenerateWalls) return;
+        if (UnityEngine.Random.Range(0f, 1f) > wallRate || !canGenerateWalls) return false;
 
         int wallHeight = UnityEngine.Random.Range(minWallHeight, maxWallHeight);
 
@@ -194,5 +231,7 @@ public class LevelGeneration : MonoBehaviour
                 break;
             }
         }
+
+        return true;
     }
 }

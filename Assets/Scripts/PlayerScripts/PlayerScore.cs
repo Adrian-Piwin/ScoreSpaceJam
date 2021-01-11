@@ -9,6 +9,7 @@ public class PlayerScore : MonoBehaviour
 
     private Vector2 startPos;
     public float distanceTraveled;
+    public float coins;
 
     void OnEnable()
     {
@@ -30,5 +31,10 @@ public class PlayerScore : MonoBehaviour
             distanceTraveled = Mathf.Floor(Vector2.Distance(startPos, transform.position));
 
         scoreUI.text = distanceTraveled + " M";
+    }
+
+    public void PickupCoin()
+    {
+        coins++;
     }
 }

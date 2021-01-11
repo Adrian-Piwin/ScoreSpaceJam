@@ -11,6 +11,9 @@ public class MainMenu : MonoBehaviour
     [Header("Help")]
     [SerializeField] private GameObject helpUI;
 
+    [Header("Store")]
+    [SerializeField] private GameObject storeUI;
+
 
     public void ToggleSettings()
     {
@@ -20,5 +23,10 @@ public class MainMenu : MonoBehaviour
     public void ToggleHelp()
     {
         helpUI.SetActive(!helpUI.active);
+    }
+
+    public void ToggleStore()
+    {
+        storeUI.SetActive(!storeUI.active);
     }
 }

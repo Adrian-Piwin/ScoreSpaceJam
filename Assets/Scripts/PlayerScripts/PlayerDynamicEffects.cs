@@ -41,11 +41,11 @@ public class PlayerDynamicEffects : MonoBehaviour
 
         // Lerp to vignette
         if (Mathf.Abs(defaultVignette * 2 - vignette.intensity.value) > 0.02f && playerMovement.isTeleporting)
-            vignette.intensity.value = Mathf.Lerp(vignette.intensity.value, defaultVignette * 2, lerpSpeed);
+            vignette.intensity.value = Mathf.Lerp(vignette.intensity.value, defaultVignette * 2, lerpSpeed * Time.deltaTime);
 
         // Lerp to 0
         if (Mathf.Abs(defaultVignette - vignette.intensity.value) > 0.02f && !playerMovement.isTeleporting)
-            vignette.intensity.value = Mathf.Lerp(vignette.intensity.value, defaultVignette, lerpSpeed);
+            vignette.intensity.value = Mathf.Lerp(vignette.intensity.value, defaultVignette, lerpSpeed * Time.deltaTime);
 
     }
 

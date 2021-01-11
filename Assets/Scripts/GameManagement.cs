@@ -13,13 +13,12 @@ public class GameManagement : MonoBehaviour
     [Header("Player")]
     [SerializeField] private GameObject player;
     [SerializeField] private PlayerMovement playerMovement;
-    [SerializeField] private PlayerDie playerDie;
-    [SerializeField] private PlayerScore playerScore;
 
     [Header("UI")]
     [SerializeField] private GameObject mainMenuUI;
     [SerializeField] private GameObject settingsUI;
     [SerializeField] private GameObject helpUI;
+    [SerializeField] private GameObject storeUI;
     [SerializeField] private GameObject gameOverUI;
     [SerializeField] private TextMeshProUGUI scoreUI;
     [SerializeField] private TextMeshProUGUI gameOverScoreUI;
@@ -33,7 +32,8 @@ public class GameManagement : MonoBehaviour
     [SerializeField] private Tilemap generatedDangerTilemap;
 
     private bool isPlaying;
-    private float score;
+    private int score;
+    public int coins;
 
     // Start is called before the first frame update
     void Start()
@@ -41,13 +41,15 @@ public class GameManagement : MonoBehaviour
         playerMovement.canMove = false;
         scoreUI.enabled = false;
         mainMenuUI.SetActive(true);
+
+        coins = PlayerPrefs.GetInt("Coin Amount", 0);
     }
 
     // Update is called once per frame
     void Update()
     {
         // Do not start game when in UI
-        if (settingsUI.active || helpUI.active)
+        if (settingsUI.active || helpUI.active || storeUI.active)
             playerMovement.canTeleport = false;
         else
             playerMovement.canTeleport = true;
@@ -84,6 +86,9 @@ public class GameManagement : MonoBehaviour
         gameOverScoreUI.text = score + "";
         gameOverHighScoreUI.text = PlayerPrefs.GetInt("highscore", 0) + "";
 
+        // Update coins
+        PlayerPrefs.SetInt("Coin Amount", coins);
+
         gameOverUI.SetActive(true);
     }
 
@@ -109,11 +114,12 @@ public class GameManagement : MonoBehaviour
         cam.transform.position = new Vector3(0,0, -10);
     }
 
-    public void PlayerDied(int score)
+    public void PlayerDied(int score, int coins)
     {
         // Gets called on players death
 
         this.score = score;
+        this.coins = coins;
         GameOver();
     }
 

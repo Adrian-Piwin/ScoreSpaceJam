@@ -30,7 +30,8 @@ public class PlayerDie : MonoBehaviour
 
         GameObject particles = Instantiate(deathParticleSystem, transform.position, Quaternion.identity, transform.parent);
         // Tell game manager the player died
-        gameManagement.PlayerDied((int)playerScore.distanceTraveled);
+        GameObject.Find("SoundManager").GetComponent<SoundManagement>().PlayEffect("death");
+        gameManagement.PlayerDied((int)playerScore.distanceTraveled, (int)playerScore.coins);
         gameObject.SetActive(false);
         Destroy(particles, 2f);
         isDead = true;

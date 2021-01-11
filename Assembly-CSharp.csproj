@@ -57,18 +57,21 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\PlayerScripts\PlayerDynamicEffects.cs" />
     <Compile Include="Assets\Scripts\PlayerScripts\PlayerMovement.cs" />
+    <Compile Include="Assets\Scripts\LevelGeneration.cs" />
     <Compile Include="Assets\Scripts\PlayerScripts\PlayerDrag.cs" />
     <Compile Include="Assets\Scripts\SpikeWallScript.cs" />
     <Compile Include="Assets\Scripts\PlayerScripts\CameraFollow.cs" />
+    <Compile Include="Assets\Scripts\Parallax.cs" />
+    <Compile Include="Assets\Scripts\StoreManagement.cs" />
     <Compile Include="Assets\Scripts\PlayerScripts\TeleportCircle.cs" />
     <Compile Include="Assets\Scripts\PlayerScripts\PlayerDie.cs" />
-    <Compile Include="Assets\Scripts\PlayerScripts\PlayerScore.cs" />
-    <Compile Include="Assets\Scripts\Parallax.cs" />
-    <Compile Include="Assets\Scripts\LevelGeneration.cs" />
-    <Compile Include="Assets\Scripts\GameManagement.cs" />
-    <Compile Include="Assets\Scripts\UITransition.cs" />
     <Compile Include="Assets\Scripts\MainMenu.cs" />
+    <Compile Include="Assets\Scripts\GameManagement.cs" />
+    <Compile Include="Assets\Scripts\Coin.cs" />
+    <Compile Include="Assets\Scripts\UITransition.cs" />
     <Compile Include="Assets\Scripts\SoundManagement.cs" />
+    <Compile Include="Assets\Scripts\PlayerScripts\PlayerScore.cs" />
+    <Compile Include="Assets\Scripts\SettingsManagement.cs" />
   </ItemGroup>
   <ItemGroup>
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

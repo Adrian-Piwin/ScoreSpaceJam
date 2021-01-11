@@ -115,6 +115,7 @@ public class PlayerMovement : MonoBehaviour
             teleportDragObj.SetActive(true);
             isTeleporting = true;
             isCircleFollowing = true;
+            teleportCircle.transform.position = transform.position;
             teleportCircleScript.Toggle(true);
 
             forceTeleportCoroutine = ForceTeleport(teleportTimeLimit * teleportingSlowMotion);
@@ -175,6 +176,16 @@ public class PlayerMovement : MonoBehaviour
         if (hit.collider != null)
         {
             transform.position = teleportDragObj.transform.position;
+        }
+    }
+
+    // Check for bounce
+    void OnCollisionEnter2D(Collision2D other)
+    {
+        if (other.gameObject.layer == 0 && body.velocity.magnitude > 6f && !isTeleporting)
+        {
+            // bounce!
+            GameObject.Find("SoundManager").GetComponent<SoundManagement>().PlayEffect("bounce");
         }
     }
 
