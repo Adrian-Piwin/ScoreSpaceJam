@@ -6,12 +6,10 @@ using UnityEngine.Rendering.PostProcessing;
 public class PlayerDynamicEffects : MonoBehaviour
 {
     [SerializeField] private PostProcessVolume postProcessing;
-    [SerializeField] private float defaultChromaticAberration;
     [SerializeField] private float defaultVignette;
     [SerializeField] private float lerpSpeed;
 
     private PlayerMovement playerMovement;
-    private ChromaticAberration chromaticAberration;
     private Vignette vignette;
     private bool startTeleport;
 
@@ -21,7 +19,6 @@ public class PlayerDynamicEffects : MonoBehaviour
         playerMovement = GetComponent<PlayerMovement>();
 
         // Post Processing effect
-        postProcessing.profile.TryGetSettings(out chromaticAberration);
         postProcessing.profile.TryGetSettings(out vignette);
     }
 

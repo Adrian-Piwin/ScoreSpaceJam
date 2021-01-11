@@ -65,6 +65,7 @@
     <Compile Include="Assets\Scripts\PlayerScripts\PlayerScore.cs" />
     <Compile Include="Assets\Scripts\Parallax.cs" />
     <Compile Include="Assets\Scripts\LevelGeneration.cs" />
+    <Compile Include="Assets\Scripts\GameManagement.cs" />
   </ItemGroup>
   <ItemGroup>
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

@@ -4,18 +4,24 @@ using UnityEngine;
 
 public class PlayerDie : MonoBehaviour
 {
+    [SerializeField] private GameManagement gameManagement;
     [SerializeField] private GameObject deathParticleSystem;
     [SerializeField] private int deathLayer;
     [SerializeField] private int boundsLayer;
 
     public bool isDead;
     private SpriteRenderer spriteRenderer;
-    private PlayerMovement playerMovement;
+    private PlayerScore playerScore;
+
+    void OnEnable()
+    {
+        isDead = false;
+    }
 
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
-        playerMovement = GetComponent<PlayerMovement>();
+        playerScore = GetComponent<PlayerScore>();
     }
 
     private void Died()
@@ -23,17 +29,11 @@ public class PlayerDie : MonoBehaviour
         if (isDead) return;
 
         GameObject particles = Instantiate(deathParticleSystem, transform.position, Quaternion.identity, transform.parent);
-        spriteRenderer.enabled = false;
-        playerMovement.canMove = false;
+        // Tell game manager the player died
+        gameManagement.PlayerDied((int)playerScore.distanceTraveled);
+        gameObject.SetActive(false);
         Destroy(particles, 2f);
         isDead = true;
-    }
-
-    private void Respawn()
-    {
-        transform.position = Vector2.zero;
-        spriteRenderer.enabled = true;
-        playerMovement.canMove = true;
     }
 
     void OnCollisionEnter2D(Collision2D other)

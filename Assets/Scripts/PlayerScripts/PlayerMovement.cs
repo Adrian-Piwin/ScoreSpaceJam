@@ -9,6 +9,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Player Movement Settings")]
     [SerializeField] private float speed;
     [SerializeField] private float fallMultiplier;
+    [SerializeField] private float maxDownVel;
 
     [Header("Player Teleport Settings")]
     [SerializeField] public float teleportingCooldown;
@@ -27,6 +28,7 @@ public class PlayerMovement : MonoBehaviour
     // Private variables
     private TeleportCircle teleportCircleScript;
     private Rigidbody2D body;
+    private PlayerDie playerDie;
     private bool teleportInputDown;
     private bool teleportInputUp;
     private bool isCircleFollowing;
@@ -41,6 +43,7 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         body = GetComponent<Rigidbody2D>();
+        playerDie = GetComponent<PlayerDie>();
 
         teleportCircleScript = teleportCircle.GetComponent<TeleportCircle>();
         teleportCircleScript.SetRadius(teleportRadius);
@@ -84,6 +87,10 @@ public class PlayerMovement : MonoBehaviour
         {
             body.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
         }
+
+        // Set max falling velocity
+        if (body.velocity.y < maxDownVel)
+            body.velocity = new Vector2(body.velocity.x, maxDownVel);
     }
 
     // =========================== Teleporting ===========================
@@ -96,7 +103,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void TeleportStart()
     {
-        if (!teleportInputDown || teleportTimer > Time.time || !canMove) return;
+        if (!teleportInputDown || teleportTimer > Time.time || playerDie.isDead) return;
 
         // Check if clicked on player
         RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
@@ -155,7 +162,7 @@ public class PlayerMovement : MonoBehaviour
         Time.timeScale = 1f;
         Time.fixedDeltaTime = 0.02f * Time.timeScale;
 
-        if (canTeleport)
+        if (canTeleport && canMove)
             Teleport();
     }
 
@@ -168,5 +175,23 @@ public class PlayerMovement : MonoBehaviour
         {
             transform.position = teleportDragObj.transform.position;
         }
+    }
+
+    void OnDisable()
+    {
+        // On player death
+
+        // Stop teleport stuff
+        StopCoroutine(forceTeleportCoroutine);
+
+        teleportDragObj.SetActive(false);
+        teleportCircleScript.Toggle(false);
+        forceTeleport = false;
+        isCircleFollowing = false;
+        isTeleporting = false;
+
+        // Slow motion
+        Time.timeScale = 1f;
+        Time.fixedDeltaTime = 0.02f * Time.timeScale;
     }
 }

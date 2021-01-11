@@ -8,7 +8,12 @@ public class PlayerScore : MonoBehaviour
     [SerializeField] private TextMeshProUGUI scoreUI;
 
     private Vector2 startPos;
-    private float distanceTravelled;
+    public float distanceTraveled;
+
+    void OnEnable()
+    {
+        distanceTraveled = 0;
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -19,9 +24,11 @@ public class PlayerScore : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (distanceTravelled < Vector2.Distance(startPos, transform.position))
-            distanceTravelled = Mathf.Floor(Vector2.Distance(startPos, transform.position));
+        if (!scoreUI.enabled) return;
 
-        scoreUI.text = distanceTravelled + "";
+        if (distanceTraveled < Vector2.Distance(startPos, transform.position))
+            distanceTraveled = Mathf.Floor(Vector2.Distance(startPos, transform.position));
+
+        scoreUI.text = distanceTraveled + " M";
     }
 }
