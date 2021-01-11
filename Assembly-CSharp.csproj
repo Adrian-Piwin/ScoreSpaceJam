@@ -66,6 +66,7 @@
     <Compile Include="Assets\Scripts\Parallax.cs" />
     <Compile Include="Assets\Scripts\LevelGeneration.cs" />
     <Compile Include="Assets\Scripts\GameManagement.cs" />
+    <Compile Include="Assets\Scripts\UITransition.cs" />
   </ItemGroup>
   <ItemGroup>
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

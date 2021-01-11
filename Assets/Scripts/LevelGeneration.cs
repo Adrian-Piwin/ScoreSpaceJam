@@ -19,16 +19,14 @@ public class LevelGeneration : MonoBehaviour
 
     [Header("Multi Level")]
     [SerializeField] private float multiLevelRate;
-    [SerializeField] private int minMultiLevel;
-    [SerializeField] private int maxMultiLevel;
 
     [Header("Platform Length")]
     [SerializeField] private int minPlatformLength;
     [SerializeField] private int maxPlatformLength;
 
     [Header("Platform Distance")]
-    [SerializeField] private int minPlatformDistance;
-    [SerializeField] private int maxPlatformDistance;
+    [SerializeField] private int minPlatformDistanceWidth;
+    [SerializeField] private int maxPlatformDistanceWidth;
 
     [Header("Platform Height Range")]
     [SerializeField] private int minPlatformHeight;
@@ -74,15 +72,39 @@ public class LevelGeneration : MonoBehaviour
 
     private void placePlatform()
     {
-        // Check if player is within spawn distance
-        if (Vector2.Distance(new Vector2(startPos.x, startPos.y), player.position) < spawnDistance)
-        {
-            int height = UnityEngine.Random.Range(-maxPlatformDistance, maxPlatformDistance);
-            int width = UnityEngine.Random.Range(minPlatformDistance, maxPlatformDistance);
-            Vector2Int spawnPos = new Vector2Int(startPos.x + width, Mathf.Clamp(startPos.y + height, minPlatformHeight, maxPlatformHeight));
+        Vector3Int curStartPos = startPos;
 
-            // Generate platform
-            generatePlatform(spawnPos);
+        // Check if player is within spawn distance
+        if (Vector2.Distance(new Vector2(curStartPos.x, curStartPos.y), player.position) < spawnDistance)
+        {
+            Vector2Int spawnPos;
+
+            if (UnityEngine.Random.Range(0f, 1f) < multiLevelRate)
+            {
+                int width = UnityEngine.Random.Range(minPlatformDistanceWidth, maxPlatformDistanceWidth);
+
+                // Generate platform on top and bottom half of screen
+                spawnPos = new Vector2Int(curStartPos.x + width,
+                    UnityEngine.Random.Range(((maxPlatformHeight - minPlatformHeight) / 2) + minPlatformHeight, maxPlatformHeight) + 1);
+
+                generatePlatform(spawnPos);
+
+                spawnPos = new Vector2Int(curStartPos.x + width,
+                    UnityEngine.Random.Range(minPlatformHeight, ((maxPlatformHeight - minPlatformHeight) / 2) + minPlatformHeight) - 1);
+
+                generatePlatform(spawnPos);
+            }
+            else
+            {
+                // Generate platform in middle of screen
+                spawnPos = new Vector2Int(curStartPos.x + UnityEngine.Random.Range(minPlatformDistanceWidth, maxPlatformDistanceWidth),
+                    UnityEngine.Random.Range(
+                        (int)((((maxPlatformHeight - minPlatformHeight) * 0.33) + minPlatformHeight) - 1),
+                    (int)(((maxPlatformHeight - minPlatformHeight) * 0.66) + minPlatformHeight) + 1)
+                    );
+
+                generatePlatform(spawnPos);
+            }
         }
     }
 
@@ -99,24 +121,6 @@ public class LevelGeneration : MonoBehaviour
 
             generateGroundSpike(newPos);
             generateWall(newPos);
-        }
-
-        // Multi Platform
-        if (UnityEngine.Random.Range(0f, 1f) < multiLevelRate)
-        {
-            // Get new height for multi level platform
-            int newHeight = pos.y > maxPlatformHeight / 2 ? -1 : 1;
-            newHeight *= Mathf.Clamp(UnityEngine.Random.Range(minMultiLevel, maxMultiLevel), minPlatformHeight, maxPlatformHeight);
-
-            // Generate platform
-            for (int i = 0; i < length; i++)
-            {
-                newPos = new Vector3Int(pos.x + i, newHeight, 0);
-                collisionTilemap.SetTile(newPos, ground);
-
-                generateGroundSpike(newPos);
-                generateWall(newPos);
-            }
         }
 
         startPos = newPos;
