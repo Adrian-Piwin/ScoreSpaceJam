@@ -18,6 +18,8 @@ public class GameManagement : MonoBehaviour
 
     [Header("UI")]
     [SerializeField] private GameObject mainMenuUI;
+    [SerializeField] private GameObject settingsUI;
+    [SerializeField] private GameObject helpUI;
     [SerializeField] private GameObject gameOverUI;
     [SerializeField] private TextMeshProUGUI scoreUI;
     [SerializeField] private TextMeshProUGUI gameOverScoreUI;
@@ -44,6 +46,12 @@ public class GameManagement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // Do not start game when in UI
+        if (settingsUI.active || helpUI.active)
+            playerMovement.canTeleport = false;
+        else
+            playerMovement.canTeleport = true;
+
         // Enable game on first teleport
         if (!isPlaying && playerMovement.isTeleporting)
         {

@@ -24,6 +24,7 @@ public class PlayerMovement : MonoBehaviour
 
     // Public variables
     public bool canMove = true;
+    public bool canTeleport = true;
 
     // Private variables
     private TeleportCircle teleportCircleScript;
@@ -103,7 +104,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void TeleportStart()
     {
-        if (!teleportInputDown || teleportTimer > Time.time || playerDie.isDead) return;
+        if (!teleportInputDown || teleportTimer > Time.time || playerDie.isDead || !canTeleport) return;
 
         // Check if clicked on player
         RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
