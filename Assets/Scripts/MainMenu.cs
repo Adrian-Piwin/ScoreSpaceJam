@@ -29,4 +29,12 @@ public class MainMenu : MonoBehaviour
     {
         storeUI.SetActive(!storeUI.active);
     }
+
+    void Update()
+    {
+        if (Input.GetKey("escape"))
+        {
+            Application.Quit();
+        }
+    }
 }

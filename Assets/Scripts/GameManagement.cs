@@ -21,6 +21,7 @@ public class GameManagement : MonoBehaviour
     [SerializeField] private GameObject storeUI;
     [SerializeField] private GameObject gameOverUI;
     [SerializeField] private TextMeshProUGUI scoreUI;
+    [SerializeField] private TextMeshProUGUI coinsUI;
     [SerializeField] private TextMeshProUGUI gameOverScoreUI;
     [SerializeField] private TextMeshProUGUI gameOverHighScoreUI;
     [SerializeField] private TextMeshProUGUI gameOverNewHighScoreUI;
@@ -40,6 +41,7 @@ public class GameManagement : MonoBehaviour
     {
         playerMovement.canMove = false;
         scoreUI.enabled = false;
+        coinsUI.enabled = false;
         mainMenuUI.SetActive(true);
 
         coins = PlayerPrefs.GetInt("Coin Amount", 0);
@@ -60,6 +62,7 @@ public class GameManagement : MonoBehaviour
             isPlaying = true;
             mainMenuUI.SetActive(false);
             scoreUI.enabled = true;
+            coinsUI.enabled = true;
             playerMovement.canMove = true;
             spikeWall.canMove = true;
         }
@@ -73,6 +76,7 @@ public class GameManagement : MonoBehaviour
 
         // UI Stuff
         scoreUI.enabled = false;
+        coinsUI.enabled = false;
 
         gameOverNewHighScoreUI.enabled = false;
         // Update highscore
@@ -98,6 +102,7 @@ public class GameManagement : MonoBehaviour
 
         // Reset UI
         scoreUI.enabled = false;
+        coinsUI.enabled = false;
         gameOverUI.SetActive(false);
         mainMenuUI.SetActive(true);
         playerMovement.canMove = false;
@@ -119,7 +124,7 @@ public class GameManagement : MonoBehaviour
         // Gets called on players death
 
         this.score = score;
-        this.coins = coins;
+        this.coins += coins;
         GameOver();
     }
 

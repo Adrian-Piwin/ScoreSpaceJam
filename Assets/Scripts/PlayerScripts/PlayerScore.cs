@@ -6,6 +6,7 @@ using UnityEngine;
 public class PlayerScore : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI scoreUI;
+    [SerializeField] private TextMeshProUGUI coinsUI;
 
     private Vector2 startPos;
     public float distanceTraveled;
@@ -14,6 +15,9 @@ public class PlayerScore : MonoBehaviour
     void OnEnable()
     {
         distanceTraveled = 0;
+        coins = 0;
+
+        coinsUI.text = coins + "";
     }
 
     // Start is called before the first frame update
@@ -36,5 +40,6 @@ public class PlayerScore : MonoBehaviour
     public void PickupCoin()
     {
         coins++;
+        coinsUI.text = coins + "";
     }
 }

@@ -18,6 +18,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] public float teleportTimeLimit;
 
     [Header("References")]
+    [SerializeField] public GameObject bounceParticles;
     [SerializeField] public GameObject teleportDragObj;
     [SerializeField] private GameObject teleportCircle;
     [SerializeField] private LayerMask teleportCircleLayer;
@@ -124,6 +125,9 @@ public class PlayerMovement : MonoBehaviour
             // Slow motion
             Time.timeScale = teleportingSlowMotion;
             Time.fixedDeltaTime = 0.02f * Time.timeScale;
+
+            // Teleport sound effect
+            GameObject.Find("SoundManager").GetComponent<SoundManagement>().PlayEffect("teleport start");
         }
     }
 
@@ -176,6 +180,9 @@ public class PlayerMovement : MonoBehaviour
         if (hit.collider != null)
         {
             transform.position = teleportDragObj.transform.position;
+
+            // Teleport sound effect
+            GameObject.Find("SoundManager").GetComponent<SoundManagement>().PlayEffect("teleport end");
         }
     }
 
@@ -186,6 +193,7 @@ public class PlayerMovement : MonoBehaviour
         {
             // bounce!
             GameObject.Find("SoundManager").GetComponent<SoundManagement>().PlayEffect("bounce");
+            Destroy(Instantiate(bounceParticles, new Vector2(transform.position.x, transform.position.y - 0.5f), Quaternion.identity, gameObject.transform.parent), 1f);
         }
     }
 

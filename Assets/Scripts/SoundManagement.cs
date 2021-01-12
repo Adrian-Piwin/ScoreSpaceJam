@@ -15,6 +15,8 @@ public class SoundManagement : MonoBehaviour
     [SerializeField] private AudioClip death;
     [SerializeField] private AudioClip bounce;
     [SerializeField] private AudioClip coin;
+    [SerializeField] private AudioClip teleportStart;
+    [SerializeField] private AudioClip teleportEnd;
 
 
     private float musicVolume = 0.3f;
@@ -62,6 +64,12 @@ public class SoundManagement : MonoBehaviour
                 break;
             case "coin":
                 audioSourceEffects.PlayOneShot(coin);
+                break;
+            case "teleport start":
+                audioSourceEffects.PlayOneShot(teleportStart);
+                break;
+            case "teleport end":
+                audioSourceEffects.PlayOneShot(teleportEnd);
                 break;
         }
     }
