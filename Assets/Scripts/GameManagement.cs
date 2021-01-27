@@ -20,6 +20,7 @@ public class GameManagement : MonoBehaviour
     [SerializeField] private GameObject helpUI;
     [SerializeField] private GameObject storeUI;
     [SerializeField] private GameObject gameOverUI;
+    [SerializeField] private GameObject gameplayUI;
     [SerializeField] private TextMeshProUGUI scoreUI;
     [SerializeField] private TextMeshProUGUI coinsUI;
     [SerializeField] private TextMeshProUGUI gameOverScoreUI;
@@ -40,8 +41,7 @@ public class GameManagement : MonoBehaviour
     void Start()
     {
         playerMovement.canMove = false;
-        scoreUI.enabled = false;
-        coinsUI.enabled = false;
+        gameplayUI.SetActive(false);
         mainMenuUI.SetActive(true);
 
         coins = PlayerPrefs.GetInt("Coin Amount", 0);
@@ -61,8 +61,7 @@ public class GameManagement : MonoBehaviour
         {
             isPlaying = true;
             mainMenuUI.SetActive(false);
-            scoreUI.enabled = true;
-            coinsUI.enabled = true;
+            gameplayUI.SetActive(true);
             playerMovement.canMove = true;
             spikeWall.canMove = true;
         }
@@ -74,10 +73,7 @@ public class GameManagement : MonoBehaviour
         isPlaying = false;
         spikeWall.canMove = false;
 
-        // UI Stuff
-        scoreUI.enabled = false;
-        coinsUI.enabled = false;
-
+        // Update UI in gameover
         gameOverNewHighScoreUI.enabled = false;
         // Update highscore
         if (PlayerPrefs.GetInt("highscore", 0) < (int)score)
@@ -101,8 +97,7 @@ public class GameManagement : MonoBehaviour
         isPlaying = false;
 
         // Reset UI
-        scoreUI.enabled = false;
-        coinsUI.enabled = false;
+        gameplayUI.SetActive(false);
         gameOverUI.SetActive(false);
         mainMenuUI.SetActive(true);
         playerMovement.canMove = false;
