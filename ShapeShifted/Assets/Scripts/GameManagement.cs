@@ -15,6 +15,7 @@ public class GameManagement : MonoBehaviour
     [SerializeField] private PlayerMovement playerMovement;
 
     [Header("UI")]
+    [SerializeField] private LevelTransition levelTransition;
     [SerializeField] private GameObject mainMenuUI;
     [SerializeField] private GameObject settingsUI;
     [SerializeField] private GameObject helpUI;
@@ -86,6 +87,11 @@ public class GameManagement : MonoBehaviour
         PlayerPrefs.SetInt("Coin Amount", coins);
 
         gameOverUI.SetActive(true);
+    }
+
+    public void StartResetTransition() 
+    {
+        levelTransition.StartTransition();
     }
 
     public void ResetGame()

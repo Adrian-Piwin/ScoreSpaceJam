@@ -73,6 +73,7 @@
     <Compile Include="Assets\Scripts\SoundManagement.cs" />
     <Compile Include="Assets\Scripts\PlayerScripts\PlayerScore.cs" />
     <Compile Include="Assets\Scripts\StoreUI.cs" />
+    <Compile Include="Assets\Scripts\LevelTransition.cs" />
   </ItemGroup>
   <ItemGroup>
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
