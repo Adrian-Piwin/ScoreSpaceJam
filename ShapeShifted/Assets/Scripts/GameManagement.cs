@@ -21,8 +21,6 @@ public class GameManagement : MonoBehaviour
     [SerializeField] private GameObject storeUI;
     [SerializeField] private GameObject gameOverUI;
     [SerializeField] private GameObject gameplayUI;
-    [SerializeField] private TextMeshProUGUI scoreUI;
-    [SerializeField] private TextMeshProUGUI coinsUI;
     [SerializeField] private TextMeshProUGUI gameOverScoreUI;
     [SerializeField] private TextMeshProUGUI gameOverHighScoreUI;
     [SerializeField] private TextMeshProUGUI gameOverNewHighScoreUI;

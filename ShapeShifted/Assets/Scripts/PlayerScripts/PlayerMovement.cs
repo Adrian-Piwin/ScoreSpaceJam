@@ -193,7 +193,10 @@ public class PlayerMovement : MonoBehaviour
         {
             // bounce!
             GameObject.Find("SoundManager").GetComponent<SoundManagement>().PlayEffect("bounce");
-            Destroy(Instantiate(bounceParticles, new Vector2(transform.position.x, transform.position.y - 0.5f), Quaternion.identity, gameObject.transform.parent), 1f);
+
+            GameObject particles = Instantiate(bounceParticles, new Vector2(transform.position.x, transform.position.y - 0.5f), Quaternion.identity, gameObject.transform.parent);
+            particles.GetComponent<ParticleSystem>().startColor = GetComponent<SpriteRenderer>().color;
+            Destroy(particles, 1f);
         }
     }
 

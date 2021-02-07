@@ -10,7 +10,6 @@ public class PlayerDie : MonoBehaviour
     [SerializeField] private int boundsLayer;
 
     public bool isDead;
-    private SpriteRenderer spriteRenderer;
     private PlayerScore playerScore;
 
     void OnEnable()
@@ -20,7 +19,6 @@ public class PlayerDie : MonoBehaviour
 
     void Start()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
         playerScore = GetComponent<PlayerScore>();
     }
 
@@ -29,6 +27,7 @@ public class PlayerDie : MonoBehaviour
         if (isDead) return;
 
         GameObject particles = Instantiate(deathParticleSystem, transform.position, Quaternion.identity, transform.parent);
+        particles.GetComponent<ParticleSystem>().startColor = GetComponent<SpriteRenderer>().color;
         // Tell game manager the player died
         GameObject.Find("SoundManager").GetComponent<SoundManagement>().PlayEffect("death");
         gameManagement.PlayerDied((int)playerScore.distanceTraveled, (int)playerScore.coins);

@@ -29,6 +29,9 @@ public class LevelGeneration : MonoBehaviour
     [Tooltip("Max wall rate percentage on max difficulty factor")]
     [SerializeField] private float wallRateMax;
 
+    [Tooltip("Min coin rate percentage on min difficulty factor")]
+    [SerializeField] private float coinRateMin;
+
     [Tooltip("Max coin rate percentage on max difficulty factor")]
     [SerializeField] private float coinRateMax;
 
@@ -142,7 +145,7 @@ public class LevelGeneration : MonoBehaviour
 
         float spikeAmt = (spikeRateMax * difficultyFactor) * length; // 1
         float wallAmt = (wallRateMax * difficultyFactor) * length; // 2
-        float coinAmt = (coinRateMax * difficultyFactor) * length; // 3
+        float coinAmt = (Mathf.Clamp((coinRateMax * difficultyFactor), coinRateMin, coinRateMax) * length); // 3
 
         for (int i = 0; i < length; i++) 
         {
