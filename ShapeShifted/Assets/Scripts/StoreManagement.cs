@@ -19,6 +19,8 @@ public class StoreManagement : MonoBehaviour
 {
     [Header("Store Items")]
     [SerializeField] private int storePageItemCount;
+    [SerializeField] private bool canChangeSprite;
+    [SerializeField] private bool canChangeColor;
     [SerializeField] private List<StoreItem> storeItems;
 
     [Header("Store Button References")]
@@ -36,6 +38,7 @@ public class StoreManagement : MonoBehaviour
     [Header("Other References")]
     [SerializeField] private GameManagement gameManagement;
     [SerializeField] private TextMeshProUGUI coinText;
+    [SerializeField] private StoreManagement otherStore;
 
     private int coins = -1;
     private int currentIndex;
@@ -43,12 +46,18 @@ public class StoreManagement : MonoBehaviour
 
     void Start() {
         // Set default skin as bought
-        PlayerPrefs.SetInt("Bought 0", 1);
+        if (canChangeColor)
+            PlayerPrefs.SetInt("Bought Color 0", 1);
+        else if (canChangeSprite)
+            PlayerPrefs.SetInt("Bought Sprite 0", 1);
 
         // Update store with what is bought
         isBoughtList = new List<bool>(new bool[storeItems.Count]);
         for (int i = 0; i < storeItems.Count; i++) {
-            isBoughtList[i] = PlayerPrefs.GetInt("Bought " + i, 0) == 0 ? false : true;
+            if (canChangeColor)
+                isBoughtList[i] = PlayerPrefs.GetInt("Bought Color " + i, 0) == 0 ? false : true;
+            else if (canChangeSprite)
+                isBoughtList[i] = PlayerPrefs.GetInt("Bought Sprite " + i, 0) == 0 ? false : true;
         }
 
         // Get current store items
@@ -59,19 +68,24 @@ public class StoreManagement : MonoBehaviour
         UpdateSelected();
         UpdateStoreNav();
 
-        ChangePlayerSprite(PlayerPrefs.GetInt("Current Selection", 0));
+        if (canChangeColor)
+            ChangePlayerSprite(PlayerPrefs.GetInt("Current Color Selection", 0));
+        else if (canChangeSprite)
+            ChangePlayerSprite(PlayerPrefs.GetInt("Current Sprite Selection", 0));
     }
 
-    public void MenuEnabled() 
+    void Update() 
     {
-        // Call when menu is enabled
-        coins = gameManagement.coins;
-        coinText.text = "COINS: " + coins;
+        if (coins != gameManagement.coins)
+        {
+            coins = gameManagement.coins;
+            coinText.text = "COINS: " + coins;
+        }
     }
 
     // =============== Update Btns ===============
 
-    private void SetupStore() 
+    public void SetupStore() 
     {
         // Display items for store page
 
@@ -80,7 +94,11 @@ public class StoreManagement : MonoBehaviour
         foreach (Image img in storeSprites) 
         {
             img.sprite = storeItems[currentIndex + i].sprite;
-            img.color = storeItems[currentIndex + i].color;
+
+            if (!canChangeColor)
+                img.color = player.color;
+            else
+                img.color = storeItems[currentIndex + i].color;
             i++;
         }
 
@@ -118,14 +136,18 @@ public class StoreManagement : MonoBehaviour
     private void UpdateSelected() {
         // Display if skin is selected
 
-        int select = PlayerPrefs.GetInt("Current Selection", 0);
+        int select = 0;
+        if (canChangeColor)
+            select = PlayerPrefs.GetInt("Current Color Selection", 0);
+        else if (canChangeSprite)
+            select = PlayerPrefs.GetInt("Current Sprite Selection", 0);
 
         foreach (Transform btn in storeButtons) {
             btn.GetChild(0).GetComponent<TextMeshProUGUI>().color = new Color32(0, 0, 0, 255);
         }
 
         // Check if page has selected item
-        if (select >= currentIndex && select <= currentIndex + storePageItemCount) 
+        if (select >= currentIndex && select < currentIndex + storePageItemCount) 
         {
             // Display currently selected item by greying out button
             storeButtons[select - currentIndex].GetChild(0).GetComponent<TextMeshProUGUI>().color = new Color32(70, 70, 70, 255);
@@ -173,17 +195,24 @@ public class StoreManagement : MonoBehaviour
     {
         // Update player sprites / colors
 
-        // Player update
-        player.sprite = storeItems[select].sprite;
-        player.color = storeItems[select].color;
+        if (canChangeSprite) 
+        {
+            // Change sprite
+            player.sprite = storeItems[select].sprite;
+            playerDrag.sprite = storeItems[select].sprite;
+        }
 
-        // Player drag update
-        playerDrag.sprite = storeItems[select].sprite;
-        // Keep alpha from drag, then update new color
-        Color dragColor = playerDrag.color;
-        Color newDragColor = storeItems[select].color;
-        newDragColor.a = dragColor.a;
-        playerDrag.color = newDragColor;
+        if (canChangeColor) 
+        {
+            // Change color
+            player.color = storeItems[select].color;
+
+            // Keep alpha from drag, then update new color
+            Color dragColor = playerDrag.color;
+            Color newDragColor = storeItems[select].color;
+            newDragColor.a = dragColor.a;
+            playerDrag.color = newDragColor;
+        }
     }
 
     // =============== On Btn Press ===============
@@ -195,24 +224,46 @@ public class StoreManagement : MonoBehaviour
         // Buy item
         if (!isBoughtList[currentIndex + select] && coins >= storeItems[currentIndex + select].price)
         {
-            PlayerPrefs.SetInt("Bought " + (currentIndex + select), 1);
+            if (canChangeColor)
+                PlayerPrefs.SetInt("Bought Color " + (currentIndex + select), 1);
+            else if (canChangeSprite)
+                PlayerPrefs.SetInt("Bought Sprite " + (currentIndex + select), 1);
+
             isBoughtList[currentIndex + select] = true;
             
             coins -= storeItems[currentIndex + select].price;
             gameManagement.coins = coins;
+            otherStore.coins = coins;
             coinText.text = "COINS: " + coins;
 
-            PlayerPrefs.SetInt("Current Selection", currentIndex + select);
+            if (canChangeColor)
+                PlayerPrefs.SetInt("Current Color Selection", currentIndex + select);
+            else if (canChangeSprite)
+                PlayerPrefs.SetInt("Current Sprite Selection", currentIndex + select);
+
             UpdateSelected();
             UpdateBought();
             ChangePlayerSprite(currentIndex + select);
+
+            // Update other store on any selection changes
+            otherStore.SetupStore();
+            otherStore.UpdateBought();
+            otherStore.UpdateSelected();
         }
         // If item is already bought and not selected, select it
-        else if (isBoughtList[currentIndex + select] && currentIndex + select != PlayerPrefs.GetInt("Current Selection"))
+        else if (isBoughtList[currentIndex + select] && ( !( canChangeColor && PlayerPrefs.GetInt("Current Color Selection") == currentIndex + select ) && !(canChangeSprite && PlayerPrefs.GetInt("Current Sprite Selection") == currentIndex + select) ) )
         {
-            PlayerPrefs.SetInt("Current Selection", currentIndex + select);
+            if (canChangeColor)
+                PlayerPrefs.SetInt("Current Color Selection", currentIndex + select);
+            else if (canChangeSprite)
+                PlayerPrefs.SetInt("Current Sprite Selection", currentIndex + select);
+
             UpdateSelected();
             ChangePlayerSprite(currentIndex + select);
+
+            otherStore.SetupStore();
+            otherStore.UpdateBought();
+            otherStore.UpdateSelected();
         }
 
     }
@@ -227,6 +278,7 @@ public class StoreManagement : MonoBehaviour
             UpdateBought();
             UpdateSelected();
             UpdateStoreNav();
+
         }
     }
 

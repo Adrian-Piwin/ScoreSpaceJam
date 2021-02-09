@@ -14,20 +14,22 @@ public class MainMenu : MonoBehaviour
     [Header("Store")]
     [SerializeField] private GameObject storeUI;
 
-
     public void ToggleSettings()
     {
-        settingsUI.SetActive(!settingsUI.active);
+        if (!helpUI.active && !storeUI.active)
+            settingsUI.SetActive(!settingsUI.active);
     }
 
     public void ToggleHelp()
     {
-        helpUI.SetActive(!helpUI.active);
+        if (!settingsUI.active && !storeUI.active)
+            helpUI.SetActive(!helpUI.active);
     }
 
     public void ToggleStore()
     {
-        storeUI.SetActive(!storeUI.active);
+        if (!helpUI.active && !settingsUI.active)
+            storeUI.SetActive(!storeUI.active);
     }
 
     void Update()

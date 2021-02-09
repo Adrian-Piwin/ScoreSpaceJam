@@ -5,10 +5,8 @@ using System;
 
 public class StoreUI : MonoBehaviour
 {
-    [SerializeField] StoreManagement storeManagement;
-
-    private void OnEnable() 
+    private void Start() 
     {
-        storeManagement.MenuEnabled();
+        gameObject.SetActive(false);
     }
 }
