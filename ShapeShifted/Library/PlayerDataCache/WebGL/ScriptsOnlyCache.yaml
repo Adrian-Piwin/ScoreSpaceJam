@@ -5,6 +5,7 @@ ScriptsOnlyBuild:
     - Coin
     - GameManagement
     - LevelGeneration
+    - LevelTransition
     - MainMenu
     - Parallax
     - PlayerDie
@@ -21,6 +22,7 @@ ScriptsOnlyBuild:
     - UnityEditor.U2D.Animation.BoneGizmo
     Unity.2D.Tilemap.Editor.dll:
     - UnityEditor.Tilemaps.GridBrush
+    - UnityEditor.Tilemaps.GridBrushEditor
     - UnityEditor.Tilemaps.GridPaintPaletteClipboard
     - UnityEditor.Tilemaps.GridPaintPaletteWindow
     - UnityEditor.Tilemaps.GridPaintingState
@@ -173,23 +175,25 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 14702}
     - Class: 114
-      Script: {instanceID: 14814}
+      Script: {instanceID: 14800}
     - Class: 114
-      Script: {instanceID: 14856}
+      Script: {instanceID: 14816}
     - Class: 114
-      Script: {instanceID: 15128}
+      Script: {instanceID: 14858}
     - Class: 114
-      Script: {instanceID: 15204}
+      Script: {instanceID: 15130}
     - Class: 114
-      Script: {instanceID: 15286}
+      Script: {instanceID: 15206}
     - Class: 114
-      Script: {instanceID: 15328}
+      Script: {instanceID: 15288}
     - Class: 114
-      Script: {instanceID: 15504}
+      Script: {instanceID: 15330}
     - Class: 114
-      Script: {instanceID: 15530}
+      Script: {instanceID: 15508}
     - Class: 114
-      Script: {instanceID: 15558}
+      Script: {instanceID: 15534}
+    - Class: 114
+      Script: {instanceID: 15562}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -427,7 +431,7 @@ ScriptsOnlyBuild:
     className: AnimationTrack
   - hash:
       serializedVersion: 2
-      Hash: ac348224d27e88623e73054ff22c80de
+      Hash: 794246c52dea754bd79001aacf7e9a2b
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: LevelGeneration
@@ -601,7 +605,7 @@ ScriptsOnlyBuild:
     className: AutoExposure
   - hash:
       serializedVersion: 2
-      Hash: 6d4c7902d083e35d59b89c88aca0e6f6
+      Hash: 8cb7cb45bbaa48950f55bcd8975e8dad
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: StoreManagement
@@ -727,7 +731,7 @@ ScriptsOnlyBuild:
     className: MainMenu
   - hash:
       serializedVersion: 2
-      Hash: 93743c346ac7ec9d57bbd210db82bafc
+      Hash: 761fa13f6d3616376e98211d638ff408
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: GameManagement
@@ -743,6 +747,12 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
     className: AudioTrack
+  - hash:
+      serializedVersion: 2
+      Hash: 49822d9fd378ec8d4a244021c3a7e0dc
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: LevelTransition
   - hash:
       serializedVersion: 2
       Hash: ae83e830e7a90c0aff918c4c2e520825
@@ -841,6 +851,12 @@ ScriptsOnlyBuild:
     className: Outline
   - hash:
       serializedVersion: 2
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: StoreUI
+  - hash:
+      serializedVersion: 2
       Hash: 134322c9293c1896357cce271b819ce4
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.EventSystems
@@ -908,4 +924,4 @@ ScriptsOnlyBuild:
   platform: 20
   scenePathNames:
   - Assets/Scenes/SampleScene.unity
-  playerPath: C:/Users/Adrian/Desktop/newgl
+  playerPath: C:/Users/Adrian/Desktop/Shape Shifted WebGL
