@@ -17,10 +17,17 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float teleportRadius;
     [SerializeField] public float teleportTimeLimit;
 
+    [Header("Player Teleport Settings")]
+    [SerializeField] public float bounceEffectThreshold;
+    [SerializeField] public float squishEffectThreshold;
+    [SerializeField] public float squishEffectMax;
+
     [Header("References")]
     [SerializeField] public GameObject bounceParticles;
     [SerializeField] public GameObject teleportDragObj;
     [SerializeField] private GameObject teleportCircle;
+    [SerializeField] private Animator animator;
+    [SerializeField] private Transform playerSprite;
     [SerializeField] private LayerMask teleportCircleLayer;
 
     // Public variables
@@ -49,6 +56,13 @@ public class PlayerMovement : MonoBehaviour
 
         teleportCircleScript = teleportCircle.GetComponent<TeleportCircle>();
         teleportCircleScript.SetRadius(teleportRadius);
+    }
+
+    private void OnEnable()
+    {
+        // Make sure player shape is reset on reset
+        playerSprite.transform.position = Vector3.zero;
+        playerSprite.transform.localScale = Vector3.one;
     }
 
     // Update is called once per frame
@@ -189,14 +203,25 @@ public class PlayerMovement : MonoBehaviour
     // Check for bounce
     void OnCollisionEnter2D(Collision2D other)
     {
-        if (other.gameObject.layer == 0 && body.velocity.magnitude > 6f && !isTeleporting)
+        // Sound & Particles
+        if (other.gameObject.layer == 0 && Mathf.Abs(body.velocity.y) > bounceEffectThreshold && !isTeleporting)
         {
             // bounce!
             GameObject.Find("SoundManager").GetComponent<SoundManagement>().PlayEffect("bounce");
 
             GameObject particles = Instantiate(bounceParticles, new Vector2(transform.position.x, transform.position.y - 0.5f), Quaternion.identity, gameObject.transform.parent);
-            particles.GetComponent<ParticleSystem>().startColor = GetComponent<SpriteRenderer>().color;
+            particles.GetComponent<ParticleSystem>().startColor = playerSprite.GetComponent<SpriteRenderer>().color;
             Destroy(particles, 1f);
+        }
+
+        // Squish 
+        if (other.gameObject.layer == 0 && Mathf.Abs(body.velocity.y) > squishEffectThreshold && !isTeleporting) 
+        {
+            // Squish effect dynamic to gravity
+            float squishPercent = Mathf.Abs(body.velocity.y / squishEffectMax);
+
+            animator.SetFloat("SquishBlend", squishPercent);
+            animator.Play("SquishTree");
         }
     }
 
